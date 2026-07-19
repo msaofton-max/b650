@@ -165,6 +165,24 @@
   }
   @keyframes burst{ from{ opacity:1; transform: scale(0.2);} to{ opacity:0; transform: scale(2.2);} }
 
+  .close-btn{
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: 16px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(33,29,24,0.07);
+    border: none;
+    color: var(--ink-soft);
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    padding: 0;
+  }
+
   .footer-links{
     text-align: center;
     margin-top: 14px;
@@ -251,7 +269,7 @@
 
   <!-- 1 — açılış -->
   <section class="screen active" data-screen="intro">
-    <div class="eyebrow"><span>01 · 05</span><span>bugün, öğle arası</span></div>
+    <button class="close-btn" data-decline type="button" aria-label="Kapat">×</button>
     <div class="content">
       <h1>Seninle tanışmak istiyorum.</h1>
       <p class="sub">Bunu yazacak cesareti ancak burada bulabildim. Bir şans verir misin?</p>
@@ -272,7 +290,7 @@
 
   <!-- 2 — tür seçimi -->
   <section class="screen" data-screen="type">
-    <div class="eyebrow"><span>02 · 05</span><span>seçim</span></div>
+    <button class="close-btn" data-decline type="button" aria-label="Kapat">×</button>
     <div class="content">
       <h1>Ne dersin?</h1>
       <p class="sub">Hangisi sana daha keyifli gelir?</p>
@@ -285,13 +303,12 @@
         <button class="btn-ghost" data-back type="button">Geri</button>
         <button class="btn-primary" id="btnTypeNext" type="button" disabled>Devam et</button>
       </div>
-      <div class="footer-links"><button class="link-quiet" data-decline type="button">Vazgeçtim, gerek yok</button></div>
     </div>
   </section>
 
   <!-- 3 — tarih / saat -->
   <section class="screen" data-screen="datetime">
-    <div class="eyebrow"><span>03 · 05</span><span>zaman</span></div>
+    <button class="close-btn" data-decline type="button" aria-label="Kapat">×</button>
     <div class="content">
       <h1>Ne zaman uygun olur?</h1>
       <p class="sub">Sana en rahat gelen günü ve saati seç.</p>
@@ -307,13 +324,12 @@
         <button class="btn-ghost" data-back type="button">Geri</button>
         <button class="btn-primary" id="btnDateNext" type="button" disabled>Devam et</button>
       </div>
-      <div class="footer-links"><button class="link-quiet" data-decline type="button">Vazgeçtim, gerek yok</button></div>
     </div>
   </section>
 
   <!-- 4 — iletişim -->
   <section class="screen" data-screen="contact">
-    <div class="eyebrow"><span>04 · 05</span><span>iletişim</span></div>
+    <button class="close-btn" data-decline type="button" aria-label="Kapat">×</button>
     <div class="content">
       <h1>Sana nasıl ulaşabilirim?</h1>
       <p class="sub">İstersen bu adımı boş bırakabilirsin, sorun değil.</p>
@@ -325,13 +341,12 @@
         <button class="btn-ghost" data-back type="button">Geri</button>
         <button class="btn-primary" id="btnContactNext" type="button">Devam et</button>
       </div>
-      <div class="footer-links"><button class="link-quiet" data-decline type="button">Vazgeçtim, gerek yok</button></div>
     </div>
   </section>
 
   <!-- 5 — özet / gönder -->
   <section class="screen" data-screen="summary">
-    <div class="eyebrow"><span>05 · 05</span><span>hazır</span></div>
+    <button class="close-btn" data-decline type="button" aria-label="Kapat">×</button>
     <div class="content">
       <h1>Hazır.</h1>
       <div class="ticket" id="ticketBox">
