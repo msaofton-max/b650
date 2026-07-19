@@ -98,6 +98,24 @@
 
   .note{ font-size: 12.5px; color: var(--ink-soft); text-align:center; line-height:1.5; }
   .decline-wrap{ justify-content: center; align-items: center; text-align: center; gap: 10px; }
+
+  .ticket-row.editable{ cursor:pointer; }
+  .ticket-row.editable .v{ text-decoration: underline dotted; text-underline-offset:3px; }
+
+  .modal-overlay{
+    position: fixed; inset:0; background: rgba(33,29,24,0.45);
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none; transition: opacity .25s ease; z-index: 20;
+  }
+  .modal-overlay.active{ opacity:1; pointer-events:auto; }
+  .modal-sheet{
+    background: var(--paper); width:100%; max-width:480px;
+    border-radius: 20px 20px 0 0; padding: 20px 20px max(20px, env(safe-area-inset-bottom));
+    transform: translateY(20px); transition: transform .25s ease;
+    max-height: 70vh; overflow-y:auto;
+  }
+  .modal-overlay.active .modal-sheet{ transform: translateY(0); }
+  .modal-title{ font-family: var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--shadow); margin-bottom:12px; }
 </style>
 </head>
 <body>
@@ -175,12 +193,12 @@
     <div class="content">
       <h1>🥳🥳🥳</h1>
       <div class="ticket" id="ticketBox">
-        <div class="ticket-row"><span class="k">Gün</span><span class="v" id="sumGun">—</span></div>
-        <div class="ticket-row"><span class="k">Saat</span><span class="v" id="sumSaat">—</span></div>
-        <div class="ticket-row"><span class="k">Yer</span><span class="v" id="sumYer">—</span></div>
+        <div class="ticket-row editable" data-field="gun"><span class="k">Gün</span><span class="v" id="sumGun">—</span></div>
+        <div class="ticket-row editable" data-field="saat"><span class="k">Saat</span><span class="v" id="sumSaat">—</span></div>
+        <div class="ticket-row editable" data-field="yer"><span class="k">Yer</span><span class="v" id="sumYer">—</span></div>
       </div>
       <div class="actions" style="flex-direction:column;">
-        <button class="btn-primary" id="btnTelegram" type="button" style="width:100%;">Telegram'dan da gönder</button>
+        <button class="btn-primary" id="btnTelegram" type="button" style="width:100%;">beni de bilgilendirsen müthiş olur 😅</button>
         <button class="btn-primary" id="btnInstagram" type="button" style="width:100%;">İnstagramdan gönder 😀</button>
       </div>
       <p class="note">Göndermeden önce mesajı Instagram'da düzenleyebilir ya da vazgeçebilirsin. Karar tamamen sende.</p>
@@ -188,6 +206,13 @@
     </div>
   </section>
 
+</div>
+
+<div class="modal-overlay" id="pickerModal">
+  <div class="modal-sheet">
+    <div class="modal-title" id="pickerTitle">Seç</div>
+    <div id="pickerBody"></div>
+  </div>
 </div>
 
 <script>
@@ -327,6 +352,66 @@
     document.getElementById('sumSaat').textContent = state.time || '—';
     document.getElementById('sumYer').textContent = state.venue || '—';
   }
+
+  // yerinde düzenleme pop-up'ı — statik kalır, ekran değişmez
+  const modal = document.getElementById('pickerModal');
+  const pickerTitle = document.getElementById('pickerTitle');
+  const pickerBody = document.getElementById('pickerBody');
+  function openModal(){ modal.classList.add('active'); }
+  function closeModal(){ modal.classList.remove('active'); }
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+  document.querySelectorAll('.ticket-row.editable').forEach(row => {
+    row.addEventListener('click', () => openPicker(row.dataset.field));
+  });
+
+  function openPicker(field){
+    pickerBody.innerHTML = '';
+    if (field === 'gun'){
+      pickerTitle.textContent = 'Gün seç';
+      const wrap = document.createElement('div');
+      wrap.className = 'days-row';
+      getNextDays(5).forEach(d => {
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'day-pill' + (d.iso === state.date ? ' selected' : '');
+        el.innerHTML = `<div class="dname">${d.label}</div><div class="dnum">${d.num}</div>`;
+        el.addEventListener('click', () => { state.date = d.iso; fillSummary(); closeModal(); });
+        wrap.appendChild(el);
+      });
+      pickerBody.appendChild(wrap);
+    } else if (field === 'saat'){
+      pickerTitle.textContent = 'Saat seç';
+      const wrap = document.createElement('div');
+      wrap.className = 'days-row';
+      TIME_OPTIONS.forEach(t => {
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'day-pill' + (t === state.time ? ' selected' : '');
+        el.innerHTML = `<div class="dnum" style="font-size:17px;">${t}</div>`;
+        el.addEventListener('click', () => { state.time = t; fillSummary(); closeModal(); });
+        wrap.appendChild(el);
+      });
+      pickerBody.appendChild(wrap);
+    } else if (field === 'yer'){
+      pickerTitle.textContent = 'Yer seç';
+      const wrap = document.createElement('div');
+      wrap.className = 'cards';
+      const options = VENUE_OPTIONS[state.type] || [];
+      const emoji = TYPE_EMOJI[state.type] || '📍';
+      options.forEach(name => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pickcard' + (name === state.venue ? ' selected' : '');
+        btn.innerHTML = `<span class="emoji">${emoji}</span>${name}`;
+        btn.addEventListener('click', () => { state.venue = name; fillSummary(); closeModal(); });
+        wrap.appendChild(btn);
+      });
+      pickerBody.appendChild(wrap);
+    }
+    openModal();
+  }
+
   function buildMessage(){
     return `Merhaba! 🥳 ${formatDate(state.date)}, saat ${state.time || '—'} için ${state.venue || '—'} bana uyar!`;
   }
