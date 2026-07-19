@@ -82,13 +82,13 @@
   input[type="time"]{ font-family: var(--body-font); font-size: 16px; padding: 14px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--paper-deep); color: var(--ink); width: 100%; }
   input:focus-visible{ outline: 2px solid var(--shadow); outline-offset: 2px; }
 
-  .days-row{ display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x proximity; padding-bottom:4px; }
+  .days-row{ display:flex; gap:6px; }
   .day-pill{
-    scroll-snap-align:start; flex: 0 0 auto; min-width: 64px; padding: 12px 10px; border-radius: 14px;
+    flex: 1; min-width: 0; padding: 10px 3px; border-radius: 13px;
     border: 1.5px solid var(--line); background: var(--paper-deep); text-align:center; cursor:pointer;
   }
-  .day-pill .dname{ font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing:.05em; color: var(--ink-soft); }
-  .day-pill .dnum{ font-family: var(--display); font-size: 22px; margin-top:2px; }
+  .day-pill .dname{ font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing:.02em; color: var(--ink-soft); }
+  .day-pill .dnum{ font-family: var(--display); font-size: 19px; margin-top:2px; }
   .day-pill.selected{ border-color: var(--sun); background: var(--sun-soft); }
 
   .ticket{ border: 1.5px dashed var(--line); border-radius: 16px; padding: 18px; background: var(--paper-deep); display:flex; flex-direction:column; gap:10px; }
@@ -128,7 +128,7 @@
   <section class="screen active" data-screen="intro">
     <button class="close-btn" data-decline type="button" aria-label="Kapat">×</button>
     <div class="content">
-      <h1>Tekrar Selam :)) Mesajımı okuyup buraya geldiğin için teşekkürler</h1>
+      <h1>Yaaa gelmişsiin 🙃🥳</h1>
       <p class="sub">Senin için de uygun bir zamanda görüşebilir miyiz?</p>
       <div class="actions">
         <button class="btn-ghost" id="btnNo" type="button">Nope 😒</button>
